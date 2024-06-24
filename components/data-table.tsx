@@ -24,6 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { useConfirm } from "@/hooks/use-confirm";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -42,6 +44,11 @@ export function DataTable<TData, TValue>({
   onDelete,
   disabled,
 }: DataTableProps<TData, TValue>) {
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Delete Account",
+    "Are you sure you want to delete this account?"
+  );
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -68,6 +75,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      <ConfirmDialog />
       <div className="flex items-center py-4">
         <Input
           placeholder={`Filter ${filterKey}...`}
@@ -83,9 +91,12 @@ export function DataTable<TData, TValue>({
             size="sm"
             className="ml-auto font-normal text-xs"
             disabled={disabled}
-            onClick={() => {
-              onDelete(table.getFilteredSelectedRowModel().rows);
-              table.resetRowSelection();
+            onClick={async () => {
+              const confirmed = await confirm();
+              if (confirmed) {
+                onDelete(table.getFilteredSelectedRowModel().rows);
+                table.resetRowSelection();
+              }
             }}
           >
             <Trash className="size-4 mr-2" />

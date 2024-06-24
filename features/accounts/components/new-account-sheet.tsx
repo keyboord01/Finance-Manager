@@ -27,7 +27,10 @@ export const NewAccountSheet = () => {
     });
   };
   return (
-    <Sheet open={isOpen} onOpenChange={onClose}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={onClose}
+    >
       <SheetContent className="space-y-4">
         <SheetHeader>
           <SheetTitle>Create a new account</SheetTitle>
