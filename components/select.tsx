@@ -33,15 +33,17 @@ export const Select = ({
     <CreateableSelect
       placeholder={placeholder}
       className="text-sm h-10"
-      styles={{
-        control: (base) => ({
-          ...base,
-          borderColor: "#D12D75",
-          ":hover": {
-            borderColor: "#D12D75",
-          },
-        }),
-      }}
+      styles={
+        {
+          // control: (base) => ({
+          //   ...base,
+          //   borderColor: "#D12D75",
+          //   ":hover": {
+          //     borderColor: "#D12D75",
+          //   },
+          // }),
+        }
+      }
       value={formattedValue}
       onChange={onSelect}
       options={options}

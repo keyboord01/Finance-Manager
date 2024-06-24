@@ -5,15 +5,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Select } from "@/components/select";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/date-picker";
 import { Button } from "@/components/ui/button";
-import { insertAccountSchema, insertTransactionSchema } from "@/db/schema";
+import { Textarea } from "@/components/ui/textarea";
+import { AmountInput } from "@/components/amount-input";
+
+import { convertAmmountToMiliunits } from "@/lib/utils";
+import { insertTransactionSchema } from "@/db/schema";
+
 import {
   Form,
   FormControl,
   FormField,
   FormLabel,
   FormItem,
-  FormMessage,
 } from "@/components/ui/form";
 
 const FromSchema = z.object({
@@ -21,7 +26,7 @@ const FromSchema = z.object({
   accountId: z.string(),
   categoryId: z.string().nullable().optional(),
   payee: z.string(),
-  ammount: z.string(),
+  amount: z.string(),
   notes: z.string().nullable().optional(),
 });
 
@@ -59,8 +64,13 @@ export const TransactionForm = ({
   });
 
   const handleSubmit = (values: FromValues) => {
-    // onSubmit(values);
-    console.log({ values });
+    const amount = parseFloat(values.amount);
+    const ammountInMiliunits = convertAmmountToMiliunits(amount);
+
+    onSubmit({
+      ...values,
+      amount: ammountInMiliunits,
+    });
   };
   const handleDelete = () => {
     onDelete?.();
@@ -72,6 +82,22 @@ export const TransactionForm = ({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-4 pt-4"
       >
+        {" "}
+        <FormField
+          name="date"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <DatePicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={disabled}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           name="accountId"
           control={form.control}
@@ -105,6 +131,55 @@ export const TransactionForm = ({
                   value={field.value}
                   onChange={field.onChange}
                   disabled={disabled}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="payee"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payee</FormLabel>
+              <FormControl>
+                <Input
+                  disabled={disabled}
+                  placeholder="Add a Payee"
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="amount"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Amount</FormLabel>
+              <FormControl>
+                <AmountInput
+                  {...field}
+                  disabled={disabled}
+                  placeholder="0.00"
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="notes"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  value={field.value ?? ""}
+                  disabled={disabled}
+                  placeholder="Add your notes"
                 />
               </FormControl>
             </FormItem>
