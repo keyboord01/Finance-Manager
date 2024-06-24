@@ -3,8 +3,8 @@ import { Loader2 } from "lucide-react";
 
 import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
 import { AccountForm } from "@/features/accounts/components/account-form";
-import { useCreateAccount } from "@/features/accounts/api/use-create-account";
 import { useGetAccount } from "@/features/accounts/api/use-get-account";
+import { useEditAccount } from "@/features/accounts/api/use-edit-account";
 
 import { insertAccountSchema } from "@/db/schema";
 import {
@@ -23,13 +23,14 @@ export const EditAccountSheet = () => {
   const { isOpen, onClose, id } = useOpenAccount();
 
   const accountQuery = useGetAccount(id);
+  const editMutation = useEditAccount(id);
 
-  const mutation = useCreateAccount();
+  const isPending = editMutation.isPending;
 
   const isLoading = accountQuery.isLoading;
 
   const onSubmit = (values: FromValues) => {
-    mutation.mutate(values, {
+    editMutation.mutate(values, {
       onSuccess: () => {
         onClose();
       },
@@ -59,7 +60,7 @@ export const EditAccountSheet = () => {
           <AccountForm
             id={id}
             onSubmit={onSubmit}
-            disabled={mutation.isPending}
+            disabled={isPending}
             defaultValues={defaultValues}
           />
         )}
