@@ -14,14 +14,14 @@ import { columns } from "./columns";
 
 const TransactionsPage = () => {
   const newTransaction = useNewTransaction();
-  const transactionssQuery = useGetTransactions();
-  const transaction = transactionssQuery.data || [];
+  const transactionsQuery = useGetTransactions();
+  const transaction = transactionsQuery.data || [];
   const deleteTransactions = useBulkDeleteTransactions();
 
   const isDisabled =
-    transactionssQuery.isLoading || deleteTransactions.isPending;
+    transactionsQuery.isLoading || deleteTransactions.isPending;
 
-  if (transactionssQuery.isLoading) {
+  if (transactionsQuery.isLoading) {
     return (
       <div className="max-w-screen-2xl  mx-auto w-full pb-10 -mt-24">
         <Card className="border-none drop-shadow-sm">
