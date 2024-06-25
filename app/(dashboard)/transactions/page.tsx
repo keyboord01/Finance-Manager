@@ -1,10 +1,16 @@
 "use client";
 import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
+
+import { transactions as transactionsSchema } from "@/db/schema";
 
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
 import { useGetTransactions } from "@/features/transactions/api/use-get-transactions";
 import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-delete-transactions";
+import { useBulkCreateTransactions } from "@/features/transactions/api/use-bulk-create-transactions";
+
+import { useSelectAccount } from "@/features/accounts/hooks/use-select-account";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +33,7 @@ const INITIAL_IMPORT_RESULTS = {
 };
 
 const TransactionsPage = () => {
+  const [ConfirmationDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
   const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
   const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
@@ -40,12 +47,35 @@ const TransactionsPage = () => {
   };
 
   const newTransaction = useNewTransaction();
+  const createTransactions = useBulkCreateTransactions();
   const transactionsQuery = useGetTransactions();
   const transaction = transactionsQuery.data || [];
   const deleteTransactions = useBulkDeleteTransactions();
 
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
+
+  const onSubmitImport = async (
+    values: (typeof transactionsSchema.$inferInsert)[]
+  ) => {
+    const accountId = await confirm();
+
+    if (!accountId) {
+      return toast.error("Please select an account");
+    }
+
+    const data = values.map((value) => ({
+      ...value,
+      accountId: accountId as string,
+    }));
+
+    createTransactions.mutate(data, {
+      onSuccess: () => {
+        onCancelImport();
+        transactionsQuery.refetch();
+      },
+    });
+  };
 
   if (transactionsQuery.isLoading) {
     return (
@@ -67,10 +97,11 @@ const TransactionsPage = () => {
   if (variant === VARIANTS.IMPORT) {
     return (
       <>
+        <ConfirmationDialog />
         <ImportCard
           data={importResults.data}
           onCancel={onCancelImport}
-          onSubmit={onCancelImport}
+          onSubmit={onSubmitImport}
         />
       </>
     );
