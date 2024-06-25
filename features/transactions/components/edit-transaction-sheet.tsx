@@ -22,8 +22,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { date } from "drizzle-orm/mysql-core";
-import { convertAmmountFromMiliunits } from "@/lib/utils";
 
 const FromSchema = insertTransactionSchema.omit({ id: true });
 
@@ -93,9 +91,7 @@ export const EditTransactionSheet = () => {
     ? {
         accountId: transactionQuery.data.accountId,
         categoryId: transactionQuery.data.categoryId,
-        amount: convertAmmountFromMiliunits(
-          transactionQuery.data.amount
-        ).toString(),
+        amount: transactionQuery.data.amount.toString(),
         date: transactionQuery.data.date
           ? new Date(transactionQuery.data.date)
           : new Date(),
