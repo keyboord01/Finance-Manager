@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { FaPiggyBank } from "react-icons/fa";
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 
-import { formatDateRnage } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
 import { useGetSummary } from "@/features/summary/api/use-get-summary";
 import { DataCard, DataCardSkeleton } from "@/components/data-card";
 
@@ -13,7 +13,7 @@ export const DataGrid = () => {
   const to = params.get("to") || undefined;
   const from = params.get("from") || undefined;
 
-  const dateRangeLabel = formatDateRnage({ from, to });
+  const dateRangeLabel = formatDateRange({ from, to });
 
   if (isLoading) {
     return (

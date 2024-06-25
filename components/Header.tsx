@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { HeaderLogo } from "@/components/HeaderLogo";
 import { Navigation } from "@/components/navigation";
 import { WelcomeMSG } from "@/components/WelcomeMSG";
+import { Filters } from "@/components/filters";
 
 export const Header = () => {
   return (
@@ -22,6 +23,7 @@ export const Header = () => {
           </ClerkLoading>
         </div>
         <WelcomeMSG />
+        <Filters />
       </div>
     </header>
   );
