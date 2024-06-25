@@ -28,8 +28,9 @@ export const useEditTransaction = (id?: string) => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
       });
-
-      //TODO: Invalidate summery
+      queryClient.invalidateQueries({
+        queryKey: ["summary"],
+      });
     },
     onError: () => {
       toast.error("Failed to update transaction");

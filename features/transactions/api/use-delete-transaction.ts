@@ -25,7 +25,9 @@ export const useDeleteTransaction = (id?: string) => {
         queryKey: ["transactions"],
       });
 
-      //TODO: Invalidate summery
+      queryClient.invalidateQueries({
+        queryKey: ["summary"],
+      });
     },
     onError: () => {
       toast.error("Failed to delete transaction");
