@@ -6,6 +6,8 @@ import { AccountForm } from "@/features/accounts/components/account-form";
 import { useGetAccount } from "@/features/accounts/api/use-get-account";
 import { useEditAccount } from "@/features/accounts/api/use-edit-account";
 import { useDeleteAccount } from "@/features/accounts/api/use-delete-account";
+import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
+import { useCreateAccount } from "@/features/accounts/api/use-create-account";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { insertAccountSchema } from "@/db/schema";
@@ -32,6 +34,14 @@ export const EditAccountSheet = () => {
   const accountQuery = useGetAccount(id);
   const editMutation = useEditAccount(id);
   const deleteMutation = useDeleteAccount(id);
+
+  const accountsQuery = useGetAccounts();
+  const accountMutation = useCreateAccount();
+  const onCreateAccount = (name: string) => accountMutation.mutate({ name });
+  const accountOptions = (accountsQuery.data ?? []).map((account) => ({
+    label: account.name,
+    value: account.id,
+  }));
 
   const isPending = editMutation.isPending || deleteMutation.isPending;
 
@@ -80,6 +90,8 @@ export const EditAccountSheet = () => {
             </div>
           ) : (
             <AccountForm
+              accountOptions={accountOptions}
+              onCreateAccount={onCreateAccount}
               id={id}
               onSubmit={onSubmit}
               disabled={isPending}

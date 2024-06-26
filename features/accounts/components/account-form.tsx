@@ -3,6 +3,7 @@ import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Select } from "@/components/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { insertAccountSchema } from "@/db/schema";
@@ -25,6 +26,8 @@ type Props = {
   onSubmit: (values: FromValues) => void;
   onDelete?: () => void;
   disabled?: boolean;
+  accountOptions: { label: string; value: string }[];
+  onCreateAccount: (name: string) => void;
 };
 
 export const AccountForm = ({
@@ -33,6 +36,8 @@ export const AccountForm = ({
   onSubmit,
   onDelete,
   disabled,
+  accountOptions,
+  onCreateAccount,
 }: Props) => {
   const form = useForm<FromValues>({
     resolver: zodResolver(FromSchema),
@@ -57,18 +62,24 @@ export const AccountForm = ({
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Accounsst Name</FormLabel>
               <FormControl>
-                <Input
-                  disabled={disabled}
+                <Select
                   placeholder="e.g. Cash, Bank, Credit Card, etc."
-                  {...field}
+                  options={accountOptions}
+                  onCreate={onCreateAccount}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={disabled}
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button className="w-full" disabled={disabled}>
+        <Button
+          className="w-full"
+          disabled={disabled}
+        >
           {id ? "Save" : "Create"}
         </Button>
         {!!id && (
