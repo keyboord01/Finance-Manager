@@ -24,11 +24,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <SpeedInsights />
           <QueryProvider>
             <SheetProvider />
             <Toaster />
             {children}
+            <SpeedInsights />
           </QueryProvider>
         </body>
       </html>
