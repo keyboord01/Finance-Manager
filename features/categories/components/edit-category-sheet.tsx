@@ -6,6 +6,8 @@ import { CategoryForm } from "@/features/categories/components/category-form";
 import { useGetCategory } from "@/features/categories/api/use-get-category";
 import { useEditCategory } from "@/features/categories/api/use-edit-category";
 import { useDeleteCategory } from "@/features/categories/api/use-delete-category";
+import { useCreateCategory } from "@/features/categories/api/use-create-category";
+import { useGetCategories } from "@/features/categories/api/use-get-categories";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { insertCategorySchema } from "@/db/schema";
@@ -31,8 +33,14 @@ export const EditCategorySheet = () => {
   );
 
   const categoryQuery = useGetCategory(id);
+  const categoriesQuery = useGetCategories();
+
   const editMutation = useEditCategory(id);
   const deleteMutation = useDeleteCategory(id);
+
+  const categoryMutation = useCreateCategory();
+
+  const onCreateCategory = (name: string) => categoryMutation.mutate({ name });
 
   const isPending = editMutation.isPending || deleteMutation.isPending;
 
@@ -63,6 +71,12 @@ export const EditCategorySheet = () => {
         name: categoryQuery.data.name,
       }
     : { name: "" };
+
+  const categoriesOptions = (categoriesQuery.data ?? []).map((category) => ({
+    label: category.name,
+    value: category.id,
+  }));
+
   return (
     <>
       <ConfirmDialog />
@@ -82,6 +96,7 @@ export const EditCategorySheet = () => {
           ) : (
             <CategoryForm
               id={id}
+              categoriesOptions={categoriesOptions}
               onSubmit={onSubmit}
               disabled={isPending}
               defaultValues={defaultValues}

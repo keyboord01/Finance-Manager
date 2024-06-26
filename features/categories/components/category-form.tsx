@@ -3,7 +3,7 @@ import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Input } from "@/components/ui/input";
+import { Select } from "@/components/select";
 import { Button } from "@/components/ui/button";
 import { insertCategorySchema } from "@/db/schema";
 import {
@@ -25,6 +25,8 @@ type Props = {
   onSubmit: (values: FromValues) => void;
   onDelete?: () => void;
   disabled?: boolean;
+  categoriesOptions: { label: string; value: string }[];
+  onCreateCategory: (name: string) => void;
 };
 
 export const CategoryForm = ({
@@ -33,6 +35,8 @@ export const CategoryForm = ({
   onSubmit,
   onDelete,
   disabled,
+  categoriesOptions,
+  onCreateCategory,
 }: Props) => {
   const form = useForm<FromValues>({
     resolver: zodResolver(FromSchema),
@@ -57,12 +61,15 @@ export const CategoryForm = ({
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Edit Category</FormLabel>
               <FormControl>
-                <Input
-                  disabled={disabled}
+                <Select
                   placeholder="e.g. Food, Travel, etc."
-                  {...field}
+                  options={categoriesOptions}
+                  onCreate={onCreateCategory}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={disabled}
                 />
               </FormControl>
             </FormItem>
