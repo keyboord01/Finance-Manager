@@ -97,6 +97,7 @@ export const EditCategorySheet = () => {
             <CategoryForm
               id={id}
               categoriesOptions={categoriesOptions}
+              onCreateCategory={onCreateCategory}
               onSubmit={onSubmit}
               disabled={isPending}
               defaultValues={defaultValues}
