@@ -59,7 +59,7 @@ export const AreaVariant = ({ data }: Props) => {
               stopOpacity={0.8}
             />
             <stop
-              offset="95%"
+              offset="90%"
               stopColor="#f43f5e"
               stopOpacity={0}
             />
